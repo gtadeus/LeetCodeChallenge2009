@@ -13,17 +13,11 @@ class Solution:
         max_overlap = 0
         n = len(A)
         for i in range(-n, n):
-            
             for j in range(-n, n):
-                #if (i != 0 and j != 0):
-                    #print("i: ", i, " j: ", j)
                 M = self.translate(A, i, j)
                 overlap = self.calcOverlap(M, B)
-                #print("overlap: ", overlap)
                 if overlap > max_overlap:
                     max_overlap = overlap
-        #self.translate(A, left=-1, top=-1)
-
         return max_overlap
     def calcOverlap(self, A, B):
         n = len(A)
@@ -36,13 +30,11 @@ class Solution:
     def translate(self, A, left=0, top=0):
         n = len(A)
         M = []
-        
         for i in range(n):
             N =[]
             for j in range(n):
                 val_j = j + left
                 val_i = i + top
-                #print("here: ", val_i, val_j)
                 if  val_j < 0 or val_j >= n or val_i < 0 or val_i >= n:
                     val = 0
                 else:
@@ -52,9 +44,6 @@ class Solution:
         
         return M
             
-
-
-
 class TestDay06(unittest.TestCase):
     S = Solution()
     A_res = [[0, 0, 0],
