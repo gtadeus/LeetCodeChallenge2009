@@ -1,5 +1,5 @@
 import unittest
-     
+
 A = [[1,1,0],
     [0,1,0],
     [0,1,0]]
@@ -10,52 +10,35 @@ B = [[0,0,0],
 
 class Solution:
     def largestOverlap(self, A, B):
+        n = len(A)
         max_overlap = 0
-        n = len(A)
-        for i in range(-n, n):
-            for j in range(-n, n):
-                M = self.translate(A, i, j)
-                overlap = self.calcOverlap(M, B)
-                if overlap > max_overlap:
-                    max_overlap = overlap
+        for (dx, dy) in [(1,1), (-1, 1), (1, -1), (-1, -1)]:
+            for shiftx in range(n):
+                for shifty in range(n):
+                    count = 0
+                    for x in range(n):
+                        for y in range(n):
+                            if A[x][y] == 1:
+                                (nx, ny) = x+dx*shiftx, y+dy*shifty
+                                if 0 <= nx < n and 0 <= ny <n and B[nx][ny] == 1:
+                                        count += 1
+                    
+                    max_overlap = max(max_overlap, count)
         return max_overlap
-    def calcOverlap(self, A, B):
-        n = len(A)
-        sum_ = 0
-        for i in range(n):
-            for j in range(n):
-                if (A[i][j] == 1 and B[i][j]==1):
-                    sum_ += 1
-        return sum_
-    def translate(self, A, left=0, top=0):
-        n = len(A)
-        M = []
-        for i in range(n):
-            N =[]
-            for j in range(n):
-                val_j = j + left
-                val_i = i + top
-                if  val_j < 0 or val_j >= n or val_i < 0 or val_i >= n:
-                    val = 0
-                else:
-                    val = A[val_i][val_j]                
-                N.append(val)
-            M.append(N)
-        
-        return M
-            
+
 class TestDay06(unittest.TestCase):
     S = Solution()
     A_res = [[0, 0, 0],
             [0, 1, 1],
             [0, 0, 1]]
+
     def test_overlap(self):
         self.assertEqual(3, self.S.largestOverlap(A,B))
         self.assertEqual(1, self.S.largestOverlap([[1]], [[1]]))
-    def test_calc_overlap(self):
-        self.assertEqual(3, self.S.calcOverlap(B, self.A_res))
-    def test_translate(self):
-        self.assertEqual(self.A_res, self.S.translate(A, -1, -1))
+        self.assertEqual(1, self.S.largestOverlap([[1,0],[0,0]], [[0,1],[1,0]]))
+        self.assertEqual(2, self.S.largestOverlap([[0,1],[1,1]], [[0,1],[1,0]]))
+        self.assertEqual(26, self.S.largestOverlap([[1,1,0,1,0,1,0,0,0,0],[0,1,1,1,0,0,0,0,0,0],[0,1,0,0,1,0,0,1,0,0],[0,1,0,0,0,0,0,1,0,0],[0,0,1,0,1,0,0,0,0,0],[0,1,1,0,0,0,1,0,0,0],[0,1,0,1,1,0,0,1,0,1],[1,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,1,0,1,0],[1,0,0,1,1,1,0,0,1,0]],[[1,1,1,1,1,0,1,1,1,1],[1,1,1,1,0,1,1,1,0,0],[1,1,1,1,0,1,1,0,1,1],[1,0,1,1,0,0,1,0,1,1],[1,1,0,1,1,1,0,0,1,1],[1,1,1,1,1,0,0,1,0,1],[0,1,1,1,1,1,1,0,1,1],[0,1,1,1,0,1,1,1,1,1],[1,0,1,1,1,1,1,1,0,0],[1,1,1,1,1,1,1,1,1,0]]))
+
 
 if __name__ == '__main__':
     unittest.main()
