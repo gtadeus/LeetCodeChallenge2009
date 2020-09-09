@@ -7,52 +7,41 @@ class TreeNode:
         self.right = right
 class Solution:
     def sumRootToLeaf(self, root: TreeNode) -> int:
-        paths = self.findPath(root)
+        m = self.c(root)
+        r=0
+        for n in m:
+            if n != 0:
+                if n== 1:
+                    r+=1
+                else:
+                    r+=int(n,2)
+        return r
+    def c(self, l):
+        if l.left is None and l.right is None:
+            return [l.val]
+        else:
+            p, p2 = [], []
+            if not l.left is None:
+                p=self.c(l.left)
+            if not l.right is None:
+                p2=self.c(l.right)
+            v=f'{l.val}'
+            #v = l.val << 1
+            for i, x in enumerate(p):
+                if not l.left is None:
+                    p[i]=f'{v}{x}'
+            for i, x in enumerate(p2):
+                if not l.right is None:
+                    p2[i]=f'{v}{x}'
+                
+            return p+p2
 
-        return sum(paths)
-    def printChildren(self, nodes):
-        for indx, c in enumerate(nodes):
-                print("c_", indx, ": ", c.val, c.left, c.right, True)
-    def findPath(self, list_, parents = None,  paths=[]):
-        children = []
-        new_paths = []
-        if (len(list_)>0):
-            if (parents is None):
-                c = TreeNode(list_.pop(0), list_.pop(0), list_.pop(0))
-                children.append(c)
-                #path = f"{c.val}{c.left}"
-                path = c.val * 2**1 + c.left * 2**0
-                paths.append(path)
-                path = c.val *2**1 + c.right *2**0
-
-                paths.append(path)
-            else:
-                for p in parents:
-                    c = TreeNode(p.left, list_.pop(0), list_.pop(0))
-                    children.append(c)
-                    c = TreeNode(p.right, list_.pop(0), list_.pop(0))
-                    children.append(c)
-                    for ind, p in enumerate(paths):
-                        #paths[ind] = f"{p}{c.right}"
-                        paths[ind] = int(int(bin(p), 2) << 1) + c.right 
-                        #path2= f"{p}{c.left}"
-                        path2 = int(int(bin(p),2) << 1) + c.left 
-                        new_paths.append(path2)
-
-            
-            #for indx, c in enumerate(children):
-            #    print("c_", indx, ": ", c.val, c.left, c.right, True)
-            paths = paths + new_paths
-            paths = self.findPath(list_, children, paths)
         
-        return paths
 
 class TestDay08(unittest.TestCase):
     S = Solution()
-    input_ = [ [1,
-                0,1,
-                0,1,0,1]
-                ]
+    input_ = [ TreeNode(1, TreeNode(0, TreeNode(0,None,None), TreeNode(1,None,None)), TreeNode(1, TreeNode(0,None,None), TreeNode(1,None,None))) ]
+
     solutions = [22]
     def testSumRoot(self):
         for indx, val in enumerate(self.input_):
